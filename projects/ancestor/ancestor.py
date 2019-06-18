@@ -1,0 +1,61 @@
+'''
+Vertices = Integers
+Edges = Connections from parent to children
+
+1. take all numbers and turn into vertices
+2. create edges for parent children vertices
+3. dft and find longest path
+
+Depth first search
+return paths
+path with longest length, last element should be the oldest ancestor
+'''
+
+
+from util import Stack, Queue
+
+class Graph:
+    def __init__(self):
+        self.vertices = {}
+
+    def add_vertex(self, vertex):
+        self.vertices[vertex] = set()
+
+    def add_edge(self, v1, v2):
+        if v1 in self.vertices and v2 in self.vertices:
+            self.vertices[v1].add(v2)
+
+    def oldest_ancestor(self, starting_vertex, data_set):
+        for num in data_set:
+            self.add_vertex(num)
+        # this assumes the data set is a list
+        # every two elements get an edge with parent to child relationship
+        # [1,3,2,5] => {1: no parent, 3: 1, 2: no parent, 5: 2}    
+        for i in range(1, len(data_set), 2):
+            self.add_edge(data_set[i], data_set[i - 1])
+        # if input idividual has no parent return -1    
+        if self.vertices[starting_vertex] == set():
+            return -1
+        stack = Stack()
+        stack.push([starting_vertex])
+        visited = set()
+        oldest = []
+        while stack.size() > 0:
+            path = stack.pop()
+            vertex = path[-1]
+            if vertex not in visited:
+                if len(path) > len(oldest):
+                    oldest = path
+                if path[-1] < oldest[-1]:
+                    oldest = path
+                visited.add(vertex)
+                for neighbor in self.vertices[vertex]:
+                    new_path = path.copy()
+                    new_path.append(neighbor)
+                    stack.push(new_path)
+
+        return oldest[-1]
+
+x = Graph()
+
+print(x.oldest_ancestor(5, [1,3,2,3,3,6,5,6,5,7,4,5,4,8,8,9,11,8]))

@@ -82,7 +82,7 @@ class Graph:
         beginning from starting_vertex.
         This should be done using recursion.
         """
-        breakpoint()
+
         if visited is None:
             visited = set()
         if starting_vertex not in visited:
@@ -120,6 +120,8 @@ class Graph:
                 for neighbor in self.vertices[vertex]:
                 # Copy the path
                     new_path = path.copy()
+                    # other way to copy
+                    # new_path = list(path)
                 # Append the nieghbor to the back of the copy
                     new_path.append(neighbor)
                     #Enque the copy
@@ -155,7 +157,6 @@ class Graph:
                 for neighbor in self.vertices[vertex]:
                     new_path = path.copy()
                     new_path.append(neighbor)
-                    
                     if new_path[-1] == destination_vertex:
                         path = new_path
                         return path
@@ -234,11 +235,11 @@ if __name__ == '__main__':
     Valid BFS path:
         [1, 2, 4, 6]
     '''
-    # print(graph.bfs(1, 6))
+    # print(graph.bfs(1, 5))
 
     '''
     Valid DFS paths:
         [1, 2, 4, 6]
         [1, 2, 4, 7, 6]
     '''
-    # print(graph.dfs(1, 6))
+    # print(graph.dfs(1, 3))
