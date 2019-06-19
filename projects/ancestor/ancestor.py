@@ -3,14 +3,10 @@ Vertices = Integers
 Edges = Connections from parent to children
 
 1. take all numbers and turn into vertices
-2. create edges for parent children vertices
+2. create edges for children to parent vertices
 3. dft and find longest path
-
-Depth first search
-return paths
-path with longest length, last element should be the oldest ancestor
+4. Path with longest length, last element should be the oldest ancestor
 '''
-
 
 from util import Stack, Queue
 
@@ -38,24 +34,21 @@ class Graph:
             return -1
         stack = Stack()
         stack.push([starting_vertex])
-        visited = set()
         oldest = []
         while stack.size() > 0:
             path = stack.pop()
             vertex = path[-1]
-            if vertex not in visited:
-                if len(path) > len(oldest):
-                    oldest = path
-                if path[-1] < oldest[-1]:
-                    oldest = path
-                visited.add(vertex)
-                for neighbor in self.vertices[vertex]:
-                    new_path = path.copy()
-                    new_path.append(neighbor)
-                    stack.push(new_path)
+            if len(path) > len(oldest):
+                oldest = path
+            if len(path) == len(oldest) and path[-1] < oldest[-1]:
+                oldest = path
+            for neighbor in self.vertices[vertex]:
+                new_path = path.copy()
+                new_path.append(neighbor)
+                stack.push(new_path)
 
         return oldest[-1]
 
 x = Graph()
-
-print(x.oldest_ancestor(5, [1,3,2,3,3,6,5,6,5,7,4,5,4,8,8,9,11,8]))
+print(x.oldest_ancestor(6, [1,3,2,3,3,6,5,6,5,7,4,5,4,8,8,9,11,8,10,1]))
+# print(x.vertices)
