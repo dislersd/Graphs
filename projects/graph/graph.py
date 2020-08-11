@@ -121,8 +121,8 @@ class Graph:
                 # Copy the path
                     new_path = path.copy()
                     # other way to copy
-                    # new_path = list(path)
-                # Append the nieghbor to the back of the copy
+                    # new_path = list(path) or new_path = path + [neighbor]
+                    # Append the nieghbor to the back of the copy
                     new_path.append(neighbor)
                     #Enque the copy
                     q.enqueue(new_path)
@@ -243,3 +243,4 @@ if __name__ == '__main__':
         [1, 2, 4, 7, 6]
     '''
     # print(graph.dfs(1, 3))
+
