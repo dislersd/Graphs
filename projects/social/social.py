@@ -1,4 +1,5 @@
-
+import random
+from queue import Queue
 
 class User:
     def __init__(self, name):
@@ -18,9 +19,11 @@ class SocialGraph:
             print("WARNING: You cannot be friends with yourself")
         elif friendID in self.friendships[userID] or userID in self.friendships[friendID]:
             print("WARNING: Friendship already exists")
+            return False
         else:
             self.friendships[userID].add(friendID)
             self.friendships[friendID].add(userID)
+            return False
 
     def addUser(self, name):
         """
@@ -44,11 +47,36 @@ class SocialGraph:
         self.lastID = 0
         self.users = {}
         self.friendships = {}
-        # !!!! IMPLEMENT ME
 
-        # Add users
+        for i in range(numUsers):
+            self.addUser(f"user {i}")
 
-        # Create friendships
+        # possible_friends = []
+        # for user in self.users:
+        #     for friend in range(user + 1, self.lastID + 1):
+        #         possible_friends.append((user, friend))
+
+        # # random.shuffle(possible_friends)
+        # friends = random.sample(possible_friends, (avgFriendships * numUsers // 2))
+
+        # # for friendship in range(avgFriendships * numUsers // 2):
+        # #     friends = possible_friends[friendship]
+        # #     self.addFriendship(friends[0], friends[1])
+        # for friendships in friends:
+        #     self.addFriendship(friendships[0], friendships[1])
+
+        targetFriendships = numUsers * avgFriendships
+        totalFriendships = 0
+        collisions = 0
+        while totalFriendships < targetFriendships:
+            userID = random.randint(1, self.lastID)
+            friendID = random.randint(1, self.lastID)
+            if self.addFriendship(userID, friendID):
+                totalFriendships += 2
+            else:
+                collisions += 1
+        print(f"COLLISIONS: {collisions}")
+
 
     def getAllSocialPaths(self, userID):
         """
@@ -58,15 +86,30 @@ class SocialGraph:
         extended network with the shortest friendship path between them.
 
         The key is the friend's ID and the value is the path.
+
         """
         visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        q = Queue()
+        q.put([userID])
+        while q.qsize() > 0:
+            path = q.get()
+            vertex = path[-1]
+            if vertex not in visited:
+                visited[vertex] = path
+                for neighbor in self.friendships[vertex]:
+                    new_path = path.copy()
+                    new_path.append(neighbor)
+                    q.put(new_path)
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populateGraph(10, 2)
+    sg.populateGraph(10, 5)
     print(sg.friendships)
     connections = sg.getAllSocialPaths(1)
     print(connections)
+    print(f"USERS IN EXTENDED SOCIAL NETWORK: {len(connections)}")
+    totalSeperation = 0
+    for connection in connections:
+        totalSeperation += len(connections[connection])
